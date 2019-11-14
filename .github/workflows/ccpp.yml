@@ -1,0 +1,19 @@
+name: C/C++ CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: create build dir
+      run: mkdir -p build && cd build
+    - name: cmake
+      run: cmake -D CMAKE_BUILD_TYPE=RELEASE -D CPACK_BINARY_DEB=ON ..
+    - name: edit cpack
+      run: sed -i 's/set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS "TRUE")/#set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS "TRUE")/' ./CPackConfig.cmake
+    - name: make package
+      run: make -j package
